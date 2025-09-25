@@ -24,9 +24,9 @@ public class OnlineFeesController {
     @Autowired
     private StdLoginService stdLoginService;
 
-    @GetMapping("/home")
+    @GetMapping("/index")
     public String home(Model model) {
-        return "home";
+        return "index";
     }
 
     @PostMapping("/adminlogin")
@@ -36,7 +36,7 @@ public class OnlineFeesController {
             return "admin/dashboard"; // Ensure this file exists in the correct directory
         }
         model.addAttribute("message", "Invalid username or password.");
-        return "home";
+        return "index";
     }
 
     @GetMapping("/logout")

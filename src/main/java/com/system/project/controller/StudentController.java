@@ -68,7 +68,7 @@ public class StudentController {
 
         if (studentEmail == null) {
             // Redirect to login if the student is not logged in
-            return "redirect:/home";
+            return "redirect:/index";
         }
 
         // Fetch the student details from the database
@@ -76,7 +76,7 @@ public class StudentController {
 
         if (student == null) {
             // Handle case where student is not found
-            return "redirect:/home";
+            return "redirect:/index";
         }
 
         // Add the student object to the model
@@ -97,7 +97,7 @@ public class StudentController {
         // Invalidate the session to log out the user
         session.invalidate();
         // Redirect to the home page or login page
-        return "redirect:/home";
+        return "redirect:/index";
     }
 
 

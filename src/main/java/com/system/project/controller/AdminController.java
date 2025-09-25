@@ -66,7 +66,7 @@ public class AdminController<Payment> {
         // Invalidate the session to log out the user
         session.invalidate();
         // Redirect to the home page or login page
-        return "redirect:/home";
+        return "redirect:/index";
     }
 
     // Add Course - Display forma
