@@ -1,0 +1,162 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9; /* Light gray background */
+    color: #333; /* Dark gray text */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+header {
+    background-color: #008080; /* Teal */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+header button {
+    background-color: #4aaaa5; /* Lighter teal */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    display: inline;
+}
+
+header button:hover {
+    background-color: #006666; /* Darker teal */
+}
+
+/* Form Styles */
+form {
+    background-color: white;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555; /* Medium gray text */
+}
+
+form input[type="text"],
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd; /* Light gray border */
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form select:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue glow */
+}
+
+form button[type="submit"] {
+    background-color: #4aaaa5; /* Lighter teal */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+form button[type="submit"]:hover {
+    background-color: #006666; /* Darker teal */
+}
+
+/* Heading Styles */
+h2 {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 2.5em;
+    margin: 20px 0;
+    color: #333; /* Dark gray text */
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+table thead {
+    background-color: #008080; /* Teal */
+    color: white;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    
+}
+
+table th {
+    font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for even rows */
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1; /* Light gray hover effect */
+}
+
+/* Delete Button Styles */
+.delete-btn {
+     /* Red */
+     /* Ensure text is vertically centered */
+}
+
+
+
+/* Message Styles */
+div[th\:if] {
+    padding: 10px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #dff0d8; /* Light green background */
+    color: #3c763d; /* Dark green text */
+    border: 1px solid #d6e9c6; /* Light green border */
+}
+
+/* No Classes Message */
+.no-classes {
+    text-align: center;
+    color: #777; /* Light gray text */
+    font-style: italic;
+    padding: 20px;
+}

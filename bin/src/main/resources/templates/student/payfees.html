@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4757;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --gray: #6c757d;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 15px;
+        }
+
+        .back-button {
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header h2 i {
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background-color: #fff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+
+        .form-group input[readonly] {
+            background-color: #f8f9fa;
+            color: #555;
+        }
+
+        .fees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 1.25rem;
+        }
+
+        .fee-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 0.9rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border-left: 3px solid var(--primary);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .fee-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .fee-card label {
+            font-weight: 500;
+            color: #555;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 0.4rem;
+        }
+
+        .fee-card label i {
+            font-size: 0.9em;
+        }
+
+        .fee-input-container {
+            position: relative;
+        }
+
+        .fee-card input {
+            width: 100%;
+            padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: right;
+            background-color: #f8f9fa;
+        }
+
+        .fee-card .rupee-symbol {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+        }
+
+        .total-amount {
+            margin-top: 1.5rem;
+            padding: 0.9rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-amount label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .total-amount-input-container {
+            position: relative;
+        }
+
+
+        .total-amount input {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            border: none;
+            background: transparent;
+            text-align: right;
+            width: auto;
+            max-width: 180px;
+            padding-left: 1.5rem;
+        }
+
+        .total-amount .rupee-symbol {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a0db0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(106, 17, 203, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+        }
+
+        .btn-block {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            margin-top: 1.25rem;
+            padding: 0.9rem;
+            font-size: 1rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1.25rem;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px solid #eee;
+            margin-top: 1.5rem;
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 768px) {
+            .header {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .logo i {
+                font-size: 1.8rem;
+            }
+            
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 0 20px;
+                margin: 2rem auto;
+            }
+            
+            .dashboard-section {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+            
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .form-group input,
+            .form-group select {
+                padding: 0.8rem 1rem;
+                font-size: 0.95rem;
+            }
+            
+            .fees-grid {
+                gap: 20px;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .fee-card {
+                padding: 1rem;
+                border-radius: 8px;
+            }
+            
+            .fee-card label {
+                font-size: 0.9rem;
+            }
+            
+            .total-amount {
+                padding: 1rem;
+            }
+            
+            .total-amount label {
+                font-size: 1.1rem;
+            }
+            
+            .total-amount input {
+                font-size: 1.3rem;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+            
+            .back-button {
+            	margin-bottom: 1.5rem;
+        	}
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .fees-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .fee-card {
+                padding: 0.8rem;
+            }
+            
+            .fee-card label {
+                font-size: 0.8rem;
+            }
+            
+            .fee-card input {
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <span>EduPay</span>
+        </div>
+        <div class="user-info">
+            <div>
+                <span th:text="${student.userName}"></span>
+                <span> | Student</span>
+            </div>
+            <div class="user-avatar" th:text="${student.userName.substring(0,1).toUpperCase()}"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Back Button -->
+        <div class="back-button">
+            <button class="btn btn-secondary" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-credit-card"></i> Fee Payment</h2>
+            </div>
+
+            <!-- Student Name -->
+            <div class="form-group">
+                <label for="studentName"><i class="fas fa-user"></i> Student Name:</label>
+                <input type="text" id="studentName" name="studentName" required th:value="${student.userName}">
+            </div>
+
+            <!-- Contact Number -->
+            <div class="form-group">
+                <label for="contact"><i class="fas fa-phone"></i> Contact Number:</label>
+                <input type="text" id="contact" name="contact" required>
+            </div>
+
+            <!-- Course Dropdown -->
+            <div class="form-group">
+                <label for="course"><i class="fas fa-book"></i> Select Course:</label>
+                <select id="course" name="courseId" required>
+                    <option value="">-- Select Course --</option>
+                    <option th:each="course : ${courses}" th:value="${course.id}" th:text="${course.courseName}"></option>
+                </select>
+            </div>
+
+            <!-- Class Dropdown -->
+            <div class="form-group">
+                <label for="class"><i class="fas fa-users"></i> Select Class:</label>
+                <select id="class" name="class">
+                    <option value="">-- Select Class --</option>
+                </select>
+            </div>
+
+            <!-- Caste Dropdown -->
+            <div class="form-group">
+                <label for="casteId"><i class="fas fa-tag"></i> Select Category:</label>
+                <select id="casteId" name="casteId" required>
+                    <option value="">-- Select Caste --</option>
+                    <option th:each="caste : ${castes}" th:value="${caste.id}" th:text="${caste.casteName}"></option>
+                </select>
+            </div>
+
+            <!-- Fees Grid -->
+            <div class="fees-grid">
+                <div class="fee-card">
+                    <label for="tuitionFees"><i class="fas fa-dollar-sign"></i> Tuition Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" id="tuitionFees" name="tuitionFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="libraryFees"><i class="fas fa-book-open"></i> Library Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="libraryFees" name="libraryFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="gymkhanaFees"><i class="fas fa-dumbbell"></i> Gymkhana Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="gymkhanaFees" name="gymkhanaFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="laboratoryFees"><i class="fas fa-flask"></i> Laboratory Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="laboratoryFees" name="laboratoryFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="adminProcessingFees"><i class="fas fa-cogs"></i> Admin Processing Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="adminProcessingFees" name="adminProcessingFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="studentWelfareFund"><i class="fas fa-hand-holding-heart"></i> Student Welfare Fund:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="studentWelfareFund" name="studentWelfareFund" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="utilityFees"><i class="fas fa-tools"></i> Utility Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="utilityFees" name="utilityFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="idLibCardFees"><i class="fas fa-id-card"></i> ID & Library Card Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="idLibCardFees" name="idLibCardFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="eCharges"><i class="fas fa-bolt"></i> E-Charges:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="eCharges" name="eCharges" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="vcFund"><i class="fas fa-hand-holding-usd"></i> V.C. Fund:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="vcFund" name="vcFund" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="nssFees"><i class="fas fa-users-cog"></i> NSS Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="nssFees" name="nssFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="sportsFees"><i class="fas fa-running"></i> Sports Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="sportsFees" name="sportsFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="collegeCulFees"><i class="fas fa-theater-masks"></i> College Cultural Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="collegeCulFees" name="collegeCulFees" readonly>
+                    </div>
+                </div>
+                <div class="fee-card">
+                    <label for="otherFees"><i class="fas fa-coins"></i> Other Fees:</label>
+                    <div class="fee-input-container">
+                        <span class="rupee-symbol">₹</span>
+                        <input type="number" step="0.01" id="otherFees" name="otherFees" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="total-amount">
+                <label for="totalAmount"><i class="fas fa-calculator"></i> Total Amount:</label>
+                <div class="total-amount-input-container">
+                    <span class="rupee-symbol">₹</span>
+                    <input type="number" step="0.01" id="totalAmount" name="totalAmount" readonly>
+                </div>
+            </div>
+
+            <!-- Pay Button -->
+            <button type="button" id="payBtn" class="btn btn-primary btn-block">
+                <i class="fas fa-credit-card"></i> Pay Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2023 EduPay Student Portal. All rights reserved.</p>
+        <p>Need help? Contact support@edupay.com</p>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            // When the course dropdown changes
+            $("#course").change(function() {
+                var courseId = $(this).val();
+                if (courseId) {
+                    $.get("/student/classes", { courseId: courseId })
+                        .done(function(data) {
+                            console.log("Classes data:", data);
+                            $("#class").empty().append('<option value="">-- Select Class --</option>');
+                            data.forEach(function(cls) {
+                                $("#class").append('<option value="' + cls.id + '">' + cls.className + '</option>');
+                            });
+                        })
+                        .fail(function(jqXHR, textStatus, errorThrown) {
+                            console.error("Error fetching classes:", textStatus, errorThrown);
+                        });
+                } else {
+                    $("#class").empty().append('<option value="">-- Select Class --</option>');
+                }
+            });
+
+            // When the caste dropdown changes
+            $("#casteId").change(function() {
+                var courseId = $("#course").val();
+                var classId = $("#class").val();
+                var casteId = $(this).val();
+                if (courseId && classId && casteId) {
+                    $.get("/student/fees", { courseId: courseId, classId: classId, casteId: casteId }, function(data) {
+                        $("#tuitionFees").val(data.tuitionFees || 0);
+                        $("#libraryFees").val(data.libraryFees || 0);
+                        $("#gymkhanaFees").val(data.gymkhanaFees || 0);
+                        $("#laboratoryFees").val(data.laboratoryFees || 0);
+                        $("#adminProcessingFees").val(data.adminProcessingFees || 0);
+                        $("#studentWelfareFund").val(data.studentWelfareFund || 0);
+                        $("#utilityFees").val(data.utilityFees || 0);
+                        $("#idLibCardFees").val(data.idLibCardFees || 0);
+                        $("#eCharges").val(data.eCharges || 0);
+                        $("#vcFund").val(data.vcFund || 0);
+                        $("#nssFees").val(data.nssFees || 0);
+                        $("#sportsFees").val(data.sportsFees || 0);
+                        $("#collegeCulFees").val(data.collegeCulFees || 0);
+                        $("#otherFees").val(data.otherFees || 0);
+
+                        calculateTotal();
+                    });
+                } else {
+                    $(".fees-grid input").val('');
+                    $("#totalAmount").val('');
+                }
+            });
+
+            // Function to calculate the total amount
+            function calculateTotal() {
+                const tuitionFees = parseFloat($("#tuitionFees").val()) || 0;
+                const libraryFees = parseFloat($("#libraryFees").val()) || 0;
+                const gymkhanaFees = parseFloat($("#gymkhanaFees").val()) || 0;
+                const laboratoryFees = parseFloat($("#laboratoryFees").val()) || 0;
+                const adminProcessingFees = parseFloat($("#adminProcessingFees").val()) || 0;
+                const studentWelfareFund = parseFloat($("#studentWelfareFund").val()) || 0;
+                const utilityFees = parseFloat($("#utilityFees").val()) || 0;
+                const idLibCardFees = parseFloat($("#idLibCardFees").val()) || 0;
+                const eCharges = parseFloat($("#eCharges").val()) || 0;
+                const vcFund = parseFloat($("#vcFund").val()) || 0;
+                const nssFees = parseFloat($("#nssFees").val()) || 0;
+                const sportsFees = parseFloat($("#sportsFees").val()) || 0;
+                const collegeCulFees = parseFloat($("#collegeCulFees").val()) || 0;
+                const otherFees = parseFloat($("#otherFees").val()) || 0;
+
+                const totalAmount = tuitionFees + libraryFees + gymkhanaFees + laboratoryFees + 
+                                  adminProcessingFees + studentWelfareFund + utilityFees + 
+                                  idLibCardFees + eCharges + vcFund + nssFees + sportsFees + 
+                                  collegeCulFees + otherFees;
+                $("#totalAmount").val(totalAmount.toFixed(2));
+            }
+
+            // Redirect to payment page
+            $("#payBtn").click(function() {
+                const totalAmount = $("#totalAmount").val();
+                
+                // Store in localStorage and sessionStorage for redundancy
+                localStorage.setItem('feeTotalAmount', totalAmount);
+                sessionStorage.setItem('feeTotalAmount', totalAmount);
+                
+                // Redirect with amount as URL parameter
+                window.location.href = "/student/stdpayoption?amount=" + totalAmount;
+            });
+        });
+    </script>
+</body>
+</html>

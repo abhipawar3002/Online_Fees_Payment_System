@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4757;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin: 0 0 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            border: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .message {
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin-bottom: 1.2rem;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .error {
+            background-color: rgba(255, 71, 87, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 1.5rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            color: #ddd;
+            margin-bottom: 0.8rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .action-btn {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Media Queries for larger screens */
+        @media (min-width: 768px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem 2rem;
+            }
+
+            .logo {
+                margin-bottom: 0;
+                font-size: 1.5rem;
+            }
+
+            .logo i {
+                font-size: 1.8rem;
+            }
+
+            .user-info {
+                width: auto;
+            }
+
+            .container {
+                margin: 2rem auto;
+                padding: 0 1.5rem;
+            }
+
+            .dashboard-section {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+
+            .section-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 1rem;
+            }
+
+            table {
+                font-size: 1rem;
+            }
+
+            th, td {
+                padding: 1rem;
+            }
+        }
+
+        /* Hover effects for devices that support hover */
+        @media (hover: hover) {
+            .btn-primary:hover {
+                background-color: #5a0db0;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(106, 17, 203, 0.2);
+            }
+
+            .btn-secondary:hover {
+                background-color: #1c65e0;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(37, 117, 252, 0.2);
+            }
+
+            .btn-danger:hover {
+                background-color: #e84141;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(255, 71, 87, 0.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-book"></i>
+            <span>Course Management</span>
+        </div>
+        <div class="user-info">
+            <a href="/admin/dashboard" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Add Course Form -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-plus-circle"></i> Add New Course</h2>
+            </div>
+            
+            <!-- Success/Error Message -->
+            <div th:if="${message}" th:classappend="${success} ? 'success' : 'error'" class="message" th:text="${message}"></div>
+            
+            <form th:action="@{/admin/addCourse}" th:object="${course}" method="post">
+                <div class="form-group">
+                    <label for="courseName">Course Name</label>
+                    <input type="text" id="courseName" th:field="*{courseName}" required autocomplete="off" placeholder="Enter course name">
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Add Course
+                </button>
+            </form>
+        </div>
+
+        <!-- Course List -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-list"></i> Course List</h2>
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Course Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Empty State -->
+                        <tr th:if="${#lists.isEmpty(courses)}">
+                            <td colspan="3">
+                                <div class="empty-state">
+                                    <i class="fas fa-book-open"></i>
+                                    <h3>No courses found</h3>
+                                    <p>Add your first course using the form above</p>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Course List -->
+                        <tr th:each="course : ${courses}" th:unless="${#lists.isEmpty(courses)}">
+                            <td th:text="${course.id}"></td>
+                            <td th:text="${course.courseName}"></td>
+                            <td>
+                                <form th:action="@{/admin/deleteCourse/{id}(id=${course.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this course?')">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="submit" class="btn btn-danger action-btn">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Confirmation dialog for delete action
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this course?');
+        }
+    </script>
+</body>
+</html>

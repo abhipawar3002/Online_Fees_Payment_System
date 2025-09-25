@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Options</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Your existing styles remain the same */
+        
+        /* Add these new styles */
+        .razorpay-payment-button {
+            display: none;
+        }
+        
+        .processing-payment {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .processing-payment i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <span>EduPay</span>
+        </div>
+        <div class="user-info">
+            <div>
+                <span th:text="${student?.userName ?: 'Guest'}"></span>
+                <span> | Student</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="back-button">
+            <button class="btn btn-secondary" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-credit-card"></i> Payment Options</h2>
+            </div>
+            
+            <div class="payment-options">
+                <div class="payment-option active" id="fullPaymentOption">
+                    <i class="fas fa-wallet"></i>
+                    <h3>Total amount Pay</h3>
+                    <p>Pay the entire amount now</p>
+                    <div class="amount-selection active">
+                        <div class="fee-card">
+                            <label>Amount to Pay:</label>
+                            <div class="amount-input-container">
+                                <span class="rupee-symbol">₹</span>
+                                <input type="number" id="fullPaymentAmount" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="paymentForm">
+                <input type="hidden" name="paymentType" id="paymentTypeInput" value="FULL">
+                <input type="hidden" name="amount" id="paymentAmountInput">
+                <input type="hidden" name="studentId" th:value="${student?.id}">
+                <input type="hidden" name="installments" id="installmentsInput" value="1">
+                
+                <button type="button" id="payNowButton" class="btn btn-primary btn-block">
+                    <i class="fas fa-lock"></i> Continue to Payment
+                </button>
+                
+                <!-- Razorpay's default button (hidden, we'll use our custom button) -->
+                <button id="rzp-button" class="razorpay-payment-button">Pay with Razorpay</button>
+                
+                <div class="processing-payment" id="processingPayment">
+                    <i class="fas fa-spinner"></i>
+                    <p>Processing your payment...</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Add Razorpay checkout script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Get the total amount from URL parameters or localStorage
+        function getTotalAmount() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const amountFromUrl = urlParams.get('amount');
+            
+            if (amountFromUrl) {
+                return parseFloat(amountFromUrl);
+            }
+            
+            const amountFromStorage = localStorage.getItem('feeTotalAmount');
+            if (amountFromStorage) {
+                return parseFloat(amountFromStorage);
+            }
+            
+            console.error("No amount found in URL parameters or localStorage");
+            return 0;
+        }
+        
+        const totalAmount = getTotalAmount();
+        
+        // Update all amount displays
+        function updateAmountDisplays() {
+            if (totalAmount > 0) {
+                $("#fullPaymentAmount").val(totalAmount.toFixed(2));
+                $("#paymentAmountInput").val(totalAmount.toFixed(2));
+            } else {
+                console.error("Total amount is 0 or invalid");
+            }
+        }
+            
+        updateAmountDisplays();
+            
+        // Payment option selection
+        $(".payment-option").click(function() {
+            $(".payment-option").removeClass("active");
+            $(this).addClass("active");
+            
+            $(".amount-selection").removeClass("active");
+            $(this).find(".amount-selection").addClass("active");
+        });
+        
+     // Razorpay payment handler - updated version
+        $("#payNowButton").click(function() {
+            const amount = parseFloat($("#paymentAmountInput").val());
+            const studentId = $("input[name='studentId']").val();
+            
+            if (!amount || amount <= 0) {
+                alert("Please enter a valid amount");
+                return;
+            }
+            
+            // Show processing indicator
+            $("#payNowButton").prop("disabled", true);
+            $("#processingPayment").show();
+            
+            // Create order on your server
+            $.ajax({
+                url: "/api/payments/create-order",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    amount: amount,
+                    studentId: studentId,
+                    receipt: "fee_payment_" + studentId + "_" + Date.now()
+                }),
+                success: function(response) {
+                    // Validate response
+                    if (!response.orderId || !response.razorpayKey) {
+                        throw new Error("Invalid server response");
+                    }
+                    
+                    // Initialize Razorpay checkout
+                    const options = {
+                        key: response.razorpayKey,
+                        amount: response.amount,
+                        currency: "INR",
+                        name: "EduPay Fee Payment",
+                        description: "Education Fee Payment for Student ID: " + studentId,
+                        order_id: response.orderId,
+                        handler: handlePaymentSuccess,
+                        prefill: {
+                            name: $("input[name='studentName']").val() || "Student",
+                            email: $("input[name='studentEmail']").val() || "student@example.com",
+                            contact: $("input[name='studentPhone']").val() || "9999999999"
+                        },
+                        theme: {
+                            color: "#6a11cb"
+                        },
+                        modal: {
+                            ondismiss: resetPaymentButton
+                        }
+                    };
+                    
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+                },
+                error: handlePaymentError
+            });
+        });
+
+        // Payment success handler
+        function handlePaymentSuccess(razorpayResponse) {
+            const amount = parseFloat($("#paymentAmountInput").val());
+            const studentId = $("input[name='studentId']").val();
+            
+            $.ajax({
+                url: "/api/payments/verify",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    razorpay_payment_id: razorpayResponse.razorpay_payment_id,
+                    razorpay_order_id: razorpayResponse.razorpay_order_id,
+                    razorpay_signature: razorpayResponse.razorpay_signature,
+                    amount: amount,
+                    studentId: studentId
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = "/student/payment-success?paymentId=" + 
+                            razorpayResponse.razorpay_payment_id + 
+                            "&amount=" + amount;
+                    } else {
+                        showError("Payment verification failed. Please contact support.");
+                    }
+                },
+                error: function() {
+                    showError("Error verifying payment. Please contact support.");
+                }
+            });
+        }
+
+        // Error handler
+        function handlePaymentError(xhr, status, error) {
+            console.error("Payment Error:", error, xhr.responseText);
+            let errorMsg = "Error initiating payment. Please try again.";
+            
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
+            }
+            
+            showError(errorMsg);
+        }
+
+        // Helper functions
+        function resetPaymentButton() {
+            $("#payNowButton").prop("disabled", false);
+            $("#processingPayment").hide();
+        }
+
+        function showError(message) {
+            alert(message);
+            resetPaymentButton();
+        }})
+    </script>
+</body>
+</html>

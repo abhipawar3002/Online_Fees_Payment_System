@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4757;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.7rem;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .navigation a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            max-width: 100%;
+            margin: 0 auto 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 80%;
+            max-width: 250px;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: var(--primary);
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            padding: 2rem 0;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Login Forms */
+        #login-form {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .error-message {
+            color: var(--accent);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Features Section */
+        .feature-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-item i {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .feature-item h3 {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .feature-item p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        footer nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        footer nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* Media Queries for Larger Screens */
+        @media (min-width: 600px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 1rem 2rem;
+            }
+            
+            .navigation {
+                margin-top: 0;
+                gap: 20px;
+            }
+            
+            .navigation a {
+                font-size: 1.1rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .logo i {
+                font-size: 2rem;
+            }
+            
+            .hero {
+                padding: 4rem 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+                max-width: 700px;
+            }
+            
+            .btn-container {
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .btn {
+                width: auto;
+                padding: 0.8rem 1.5rem;
+            }
+            
+            #login-form {
+                max-width: 500px;
+                padding: 2rem;
+            }
+            
+            .feature-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 900px) {
+            .feature-list {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animation for buttons and interactive elements */
+        @media (hover: hover) {
+            .btn:hover, button[type="submit"]:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            
+            .btn-primary:hover {
+                background-color: rgba(255, 255, 255, 0.9);
+            }
+            
+            .btn-secondary:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .feature-item:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            }
+            
+            .navigation a:hover {
+                color: rgba(255, 255, 255, 0.8);
+            }
+            
+            footer nav a:hover {
+                text-decoration: underline;
+            }
+        }
+    </style>
+    <script>
+        // All JavaScript functions remain exactly the same as in your original code
+        function showLoginForm(userType) {
+            var loginForm = document.getElementById("login-form");
+            var adminForm = document.getElementById("admin-form");
+            var userForm = document.getElementById("user-form");
+            var signUpForm = document.getElementById("sign-up-form");
+
+            loginForm.style.display = "block";
+            adminForm.style.display = "none";
+            userForm.style.display = "none";
+            signUpForm.style.display = "none";
+
+            if (userType === "admin") {
+                adminForm.style.display = "block";
+            } else if (userType === "user") {
+                userForm.style.display = "block";
+            } else if (userType === "signUp") {
+                signUpForm.style.display = "block";
+            }
+        }
+
+        function validateAdminLoginForm() {
+            var username = document.getElementById("admin-username").value.trim();
+            var password = document.getElementById("admin-password").value.trim();
+            var isValid = true;
+
+            document.getElementById("admin-email-error").textContent = "";
+            document.getElementById("admin-password-error").textContent = "";
+
+            if (username === "") {
+                document.getElementById("admin-email-error").textContent = "Please enter your username.";
+                isValid = false;
+            }
+
+            if (password === "") {
+                document.getElementById("admin-password-error").textContent = "Please enter your password.";
+                isValid = false;
+            }
+            
+            if (isValid) {
+                if (username !== "admin" || password !== "pass123") {
+                    document.getElementById("admin-password-error").textContent = "Invalid username or password.";
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        function validateStudentLoginForm(event) {
+            event.preventDefault();
+            var email = document.getElementById("email").value.trim();
+            var password = document.getElementById("password").value.trim();
+            var isValid = true;
+
+            document.getElementById("user-email-error").textContent = "";
+            document.getElementById("user-password-error").textContent = "";
+
+            if (email === "") {
+                document.getElementById("user-email-error").textContent = "Please enter your email.";
+                isValid = false;
+            }
+
+            if (password === "") {
+                document.getElementById("user-password-error").textContent = "Please enter your password.";
+                isValid = false;
+            }
+
+            if (isValid) {
+                fetch("/studentlogin", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error("Invalid email or password.");
+                    }
+                })
+                .then(data => {
+                    window.location.href = data.redirectUrl;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("user-password-error").textContent = "Invalid email or password.";
+                });
+            }
+
+            return false;
+        }
+
+        function validateStudentSignUpForm(event) {
+            event.preventDefault();
+            var username = document.getElementById("signup-username").value.trim();
+            var email = document.getElementById("signup-email").value.trim();
+            var password = document.getElementById("signup-password").value.trim();
+            var isValid = true;
+
+            document.getElementById("signup-username-error").textContent = "";
+            document.getElementById("signup-email-error").textContent = "";
+            document.getElementById("signup-password-error").textContent = "";
+
+            if (username === "") {
+                document.getElementById("signup-username-error").textContent = "Please enter your name.";
+                isValid = false;
+            }
+
+            if (email === "") {
+                document.getElementById("signup-email-error").textContent = "Please enter your email.";
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                document.getElementById("signup-email-error").textContent = "Please enter a valid email address.";
+                isValid = false;
+            }
+
+            if (password === "") {
+                document.getElementById("signup-password-error").textContent = "Please enter your password.";
+                isValid = false;
+            } else if (password.length < 8) {
+                document.getElementById("signup-password-error").textContent = "Password must be at least 8 characters long.";
+                isValid = false;
+            } else if (!validatePassword(password)) {
+                document.getElementById("signup-password-error").textContent = "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+                isValid = false;
+            }
+
+            if (isValid) {
+                fetch("/studentsignup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error("Sign up failed. Please try again.");
+                    }
+                })
+                .then(data => {
+                    alert(data.message || "Sign up successful! Please login.");
+                    clearSignUpForm();
+                    showLoginForm("user");
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("signup-password-error").textContent = "Sign up failed. Please try again.";
+                });
+            }
+
+            return false;
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePassword(password) {
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return passwordRegex.test(password);
+        }
+
+        function clearSignUpForm() {
+            document.getElementById("signup-username").value = "";
+            document.getElementById("signup-email").value = "";
+            document.getElementById("signup-password").value = "";
+        }
+
+        function scrollToSection(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (section) {
+                var headerHeight = document.querySelector("header").offsetHeight;
+                var sectionPosition = section.offsetTop - headerHeight;
+                window.scrollTo({
+                    top: sectionPosition,
+                    behavior: "smooth"
+                });
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+    <title>Online Fees Payment System</title>
+</head>
+<body>
+    <header class="header">
+        <a href="#" class="logo" onclick="scrollToTop()">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>EduPay</span>
+        </a>
+        <nav class="navigation">
+            <a href="#" onclick="scrollToTop()">Home</a>
+            <a href="#features">Features</a>
+            <a href="#security">Security</a>         
+        </nav>
+    </header>
+    
+    <section id="home">
+        <div class="hero">
+            <h1>Secure and Reliable Online Fees Payment</h1>
+            <p>Experience seamless and secure transactions with our top-notch payment system for educational institutions.</p>
+            <div class="btn-container">
+                <a href="#Admin" onclick="showLoginForm('admin'); scrollToSection('login-form');" class="btn btn-primary">
+                    <i class="fas fa-user-shield"></i> Admin Login
+                </a>
+                <a href="#Student" onclick="showLoginForm('user'); scrollToSection('login-form');" class="btn btn-secondary">
+                    <i class="fas fa-user-graduate"></i> Student Login
+                </a>
+            </div>
+        </div>
+    
+        <div class="container">
+            <div id="login-form" style="display: none;">
+                <!-- Admin Login Form -->
+                <div id="admin-form" style="display: none;">
+                    <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
+                    <form action="/adminlogin" method="post" onsubmit="return validateAdminLoginForm()">
+                        <div class="form-group">
+                            <label for="admin-username">Username:</label>
+                            <input type="text" id="admin-username" name="username" placeholder="Enter admin username">
+                            <span id="admin-email-error" class="error-message"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="admin-password">Password:</label>
+                            <div class="password-container">
+                                <input type="password" id="admin-password" name="password" placeholder="Enter password">
+                                <i id="admin-eye-icon" class="fas fa-eye" onclick="togglePasswordVisibility('admin-password', 'admin-eye-icon')"></i>
+                            </div>
+                            <span id="admin-password-error" class="error-message"></span>
+                        </div>
+                        
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+
+                <!-- Student Login Form -->
+                <div id="user-form" style="display: none;">
+                    <h2><i class="fas fa-user-graduate"></i> Student Login</h2>
+                    <form onsubmit="return validateStudentLoginForm(event)">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" placeholder="Enter student email">
+                            <span id="user-email-error" class="error-message"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <div class="password-container">
+                                <input type="password" id="password" name="password" placeholder="Enter password">
+                                <i id="user-eye-icon" class="fas fa-eye" onclick="togglePasswordVisibility('password', 'user-eye-icon')"></i>
+                            </div>
+                            <span id="user-password-error" class="error-message"></span>
+                        </div>
+                        
+                        <button type="submit">Login</button>
+                    </form>
+                    <div class="toggle-form">
+                        Don't have an account? <a href="#SignUp" onclick="showLoginForm('signUp')">Sign up here</a>
+                    </div>
+                </div>
+
+                <!-- Student Sign Up Form -->
+                <div id="sign-up-form" style="display: none;">
+                    <h2><i class="fas fa-user-plus"></i> Student Sign Up</h2>
+                    <form onsubmit="return validateStudentSignUpForm(event)" autocomplete="off">
+                        <div class="form-group">
+                            <label for="signup-username">Full Name:</label>
+                            <input type="text" id="signup-username" name="username" placeholder="Enter your full name">
+                            <span id="signup-username-error" class="error-message"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-email">Email:</label>
+                            <input type="email" id="signup-email" name="email" placeholder="Enter your email">
+                            <span id="signup-email-error" class="error-message"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-password">Password:</label>
+                            <div class="password-container">
+                                <input type="password" id="signup-password" name="password" placeholder="Create password (min 8 chars)">
+                                <i id="signup-eye-icon" class="fas fa-eye" onclick="togglePasswordVisibility('signup-password', 'signup-eye-icon')"></i>
+                            </div>
+                            <span id="signup-password-error" class="error-message"></span>
+                        </div>
+                        
+                        <button type="submit">Create Account</button>
+                    </form>
+                    <div class="toggle-form">
+                        Already have an account? <a href="#Student" onclick="showLoginForm('user')">Login here</a>
+                    </div>
+                </div>
+            </div>
+
+            <section id="features">
+                <h2>Features</h2>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Instant Payments</h3>
+                        <p>Quick and efficient fee processing with real-time confirmation.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Bank-Level Security</h3>
+                        <p>Advanced encryption and security measures to protect your transactions.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Mobile Friendly</h3>
+                        <p>Accessible on all devices with a responsive design.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <h3>Payment History</h3>
+                        <p>Track all your transactions with detailed records.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-bell"></i>
+                        <h3>Payment Reminders</h3>
+                        <p>Get timely notifications for upcoming fee deadlines.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-headset"></i>
+                        <h3>24/7 Support</h3>
+                        <p>Dedicated support team available round the clock.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="security">
+                <h2><i class="fas fa-lock"></i> Security Assurance</h2>
+                <p>We prioritize your security with industry-standard measures:</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-key"></i>
+                        <h3>256-bit Encryption</h3>
+                        <p>All data is encrypted using military-grade encryption.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-fingerprint"></i>
+                        <h3>Two-Factor Authentication</h3>
+                        <p>Optional extra layer of security for your account.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-certificate"></i>
+                        <h3>PCI DSS Compliant</h3>
+                        <p>Meets all payment card industry security standards.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 EduPay - Online Fees Payment System. All rights reserved.</p>
+        <nav>
+            <ul>
+                <li><a href="#privacy">Privacy Policy</a></li>
+                <li><a href="#terms">Terms of Service</a></li>
+                <li><a href="mailto:support@edupay.com">Contact Support</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

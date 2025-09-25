@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Available Courses</h1>
+  
+    <label for="course">Course:</label>
+    <select id="course" name="courseId" onchange="loadClasses(this.value)" required>
+        <option value="">Select Course</option>
+        <option th:each="course : ${courses}" th:value="${course.courseId}" th:text="${course.name}"></option>
+    </select>
+
+    <label for="class">Class:</label>
+    <select id="class" name="classId" required>
+        <option value="">Select Class</option>
+    </select>
+
+    <script>
+ // Fetch and populate courses
+    fetch('/api/courses')
+        .then(response => response.json())
+        .then(courses => {
+            const courseDropdown = document.getElementById('courseDropdown');
+            courses.forEach(course => {
+                let option = document.createElement('option');
+                option.value = course.courseId;
+                option.text = course.courseName;
+                courseDropdown.appendChild(option);
+            });
+        });
+
+    document.getElementById('courseDropdown').addEventListener('change', function () {
+        fetch(`/api/classes/by-course/${this.value}`)
+            .then(response => response.json())
+            .then(classes => {
+                const classDropdown = document.getElementById('classDropdown');
+                classDropdown.innerHTML = '';
+                classes.forEach(cls => {
+                    let option = document.createElement('option');
+                    option.value = cls.classId;
+                    option.text = cls.className;
+                    classDropdown.appendChild(option);
+                });
+            });
+    });
+
+    document.getElementById('classDropdown').addEventListener('change', function () {
+        fetch(`/api/castes/by-class/${this.value}`)
+            .then(response => response.json())
+            .then(castes => {
+                const casteDropdown = document.getElementById('casteDropdown');
+                casteDropdown.innerHTML = '';
+                castes.forEach(caste => {
+                    let option = document.createElement('option');
+                    option.value = caste.casteId;
+                    option.text = caste.casteName;
+                    casteDropdown.appendChild(option);
+                });
+            });
+    });
+
+    document.getElementById('casteDropdown').addEventListener('change', function () {
+        const courseId = document.getElementById('courseDropdown').value;
+        const classId = document.getElementById('classDropdown').value;
+        fetch(`/api/fees/by-params?courseId=${courseId}&classId=${classId}&casteId=${this.value}`)
+            .then(response => response.json())
+            .then(fees => {
+                document.getElementById('feesAmount').innerText = `Fees Amount: ${fees.amount}`;
+            });
+    });
+
+    </script>
+</body>
+</html>

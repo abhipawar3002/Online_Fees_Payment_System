@@ -1,0 +1,72 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: calc(100% - 22px); /* Adjust width to account for padding and border */
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+select {
+    height: 40px; /* Adjust height for better appearance */
+}
+
+.fees-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid layout */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.fees-container div {
+    display: flex;
+    flex-direction: column;
+}
+
+#totalAmount {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#payBtn {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#payBtn:hover {
+    background-color: #3e8e41;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .fees-container {
+        grid-template-columns: 1fr; /* Stack fees on smaller screens */
+    }
+}
