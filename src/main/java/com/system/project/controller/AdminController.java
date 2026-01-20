@@ -49,10 +49,6 @@ public class AdminController<Payment> {
 
     @Autowired
     private FeesService feesService;
-    
-    
-    
-   
 
     // Dashboard - Display all entities
     @GetMapping("/dashboard")
