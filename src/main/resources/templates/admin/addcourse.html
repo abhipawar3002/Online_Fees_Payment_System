@@ -361,7 +361,7 @@
                     </thead>
                     <tbody>
                         <!-- Empty State -->
-                        <tr th:if="course : ${courses}">
+                        <tr th:if="${#lists.isEmpty(courses)}">
                             <td colspan="3">
                                 <div class="empty-state">
                                     <i class="fas fa-book-open"></i>
@@ -372,7 +372,7 @@
                         </tr>
                         
                         <!-- Course List -->
-                        <tr th:each="course : ${courses}" th:unless="${#lists.isEmpty(courses)}">
+                        <tr th:each="course : ${courses}">
                             <td th:text="${course.id}"></td>
                             <td th:text="${course.courseName}"></td>
                             <td>
