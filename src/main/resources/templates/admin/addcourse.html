@@ -328,7 +328,11 @@
             </div>
             
             <!-- Success/Error Message -->
-            <div th:if="${message}" th:classappend="${success} ? 'success' : 'error'" class="message" th:text="${message}"></div>
+            <div th:if="${message}"
+                 th:classappend="${success != null and success} ? 'success' : 'error'"
+                 class="message"
+                 th:text="${message}">
+            </div>
             
             <form th:action="@{/admin/addCourse}" th:object="${course}" method="post">
                 <div class="form-group">
