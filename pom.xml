@@ -18,7 +18,7 @@
     <description>Online fees payment system with Razorpay integration</description>
     
     <properties>
-        <java.version>23</java.version> <!-- Changed to LTS version -->
+        <java.version>21</java.version> <!-- Changed to LTS version -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mysql.connector.version>8.4.0</mysql.connector.version>
@@ -32,13 +32,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-mongodb</artifactId>
-    <version>3.4.5</version>
-</dependency>
         
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,19 +50,11 @@
         
         <!-- Database -->
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-<dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>8.0.33</version>
-</dependency>
-        
-        <!-- Razorpay Integration -->
-        <!-- https://mvnrepository.com/artifact/com.razorpay/razorpay-java -->
-<dependency>
-    <groupId>com.razorpay</groupId>
-    <artifactId>razorpay-java</artifactId>
-    <version>1.4.8</version>
-</dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
         
         <!-- JSON Processing -->
         <dependency>

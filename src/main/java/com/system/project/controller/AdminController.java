@@ -1,14 +1,8 @@
 package com.system.project.controller;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
