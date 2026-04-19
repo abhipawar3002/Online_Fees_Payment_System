@@ -329,7 +329,7 @@
             
             <!-- Success/Error Message -->
             <div th:if="${message}"
-                 class="message"
+                 th:classappend="${success} ? 'success' : 'error'" class="message"
                  th:text="${message}">
             </div>
             
